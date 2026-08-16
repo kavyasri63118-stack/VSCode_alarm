@@ -37,3 +37,21 @@ Check terminal
 Continue waiting
      ↓
 Check again
+
+
+On the Terminal:
+n <your command>
+       ↓
+Code Alarm starts monitoring
+       ↓
+Command executes normally
+       ↓
+Code Alarm detects the result
+       ↓
+┌──────────┬──────────┬──────────┐
+│ SUCCESS  │  FAILED  │  CRASHED │
+└──────────┴──────────┴──────────┘
+       ↓
+Alert + Job History
+       ↓
+Failure Intelligence (if applicable)
