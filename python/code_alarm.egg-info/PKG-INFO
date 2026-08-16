@@ -1,0 +1,8 @@
+Metadata-Version: 2.4
+Name: code-alarm
+Version: 1.0.0
+Summary: Laptop Code-Completion Alarm: Physical USB buzzer notifier for VS Code and Python.
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: pyserial>=3.5
+Dynamic: requires-python

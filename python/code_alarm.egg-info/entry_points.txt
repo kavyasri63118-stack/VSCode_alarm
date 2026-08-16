@@ -1,0 +1,2 @@
+[console_scripts]
+code-alarm = code_alarm.cli:main

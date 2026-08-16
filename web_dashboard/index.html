@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔔 Code Alarm V2 — Intelligent Developer Execution & Alert System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="bg-glow-orb orb-1"></div>
+  <div class="bg-glow-orb orb-2"></div>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo-group">
+        <div class="logo-icon">🔔</div>
+        <div>
+          <h1>Code Alarm <span class="v2-tag">V2</span></h1>
+          <p class="subtitle">Intelligent Developer Execution & Alert System</p>
+        </div>
+      </div>
+      <div class="header-status">
+        <div class="status-pill" id="masterStatusPill">
+          <span class="status-dot dot-green"></span>
+          <span id="masterStatusText">Master Alerts: ON</span>
+        </div>
+        <div class="status-pill" id="quietStatusPill" style="display: none;">
+          <span class="status-dot dot-yellow"></span>
+          <span>Quiet Mode ACTIVE</span>
+        </div>
+        <button id="btnConnectSerial" class="btn btn-secondary btn-small">
+          <span>⚡</span> USB Serial
+        </button>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs">
+      <button class="nav-tab active" data-tab="tab-dashboard">
+        <span class="tab-icon">📊</span> Dashboard & Live Feed
+      </button>
+      <button class="nav-tab" data-tab="tab-history">
+        <span class="tab-icon">📜</span> Job History & Analysis
+      </button>
+      <button class="nav-tab" data-tab="tab-settings">
+        <span class="tab-icon">⚙️</span> Alert Control Center
+      </button>
+      <button class="nav-tab" data-tab="tab-studio">
+        <span class="tab-icon">🎛️</span> Audio Studio & Simulator
+      </button>
+    </nav>
+
+    <!-- TAB 1: DASHBOARD & LIVE FEED -->
+    <main class="tab-content active" id="tab-dashboard">
+      <!-- Level 1 Quick Summary Cards -->
+      <section class="summary-cards-grid">
+        <div class="summary-card card-completed">
+          <div class="card-metric" id="metricCompleted">0</div>
+          <div class="card-label">✅ Completed Today</div>
+        </div>
+        <div class="summary-card card-failed">
+          <div class="card-metric" id="metricFailed">0</div>
+          <div class="card-label">❌ Failed Today</div>
+        </div>
+        <div class="summary-card card-crashed">
+          <div class="card-metric" id="metricCrashed">0</div>
+          <div class="card-label">💥 Crashed Today</div>
+        </div>
+        <div class="summary-card card-running">
+          <div class="card-metric" id="metricRunning">0</div>
+          <div class="card-label">🔄 Active Running</div>
+        </div>
+        <div class="summary-card card-time">
+          <div class="card-metric" id="metricTotalTime">0.0s</div>
+          <div class="card-label">⏱️ Total Runtime Today</div>
+        </div>
+      </section>
+
+      <!-- Live Running Jobs Section -->
+      <section class="card glass-card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="icon">🔄</span>
+            <h2>Live Multi-Job Feed</h2>
+          </div>
+          <span class="badge" id="runningCountBadge">0 Running</span>
+        </div>
+        <div id="runningJobsList" class="jobs-list">
+          <div class="empty-state">No background jobs currently running. Run commands with <code>n &lt;command&gt;</code>.</div>
+        </div>
+      </section>
+
+      <!-- Recent Completed Executions -->
+      <section class="card glass-card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="icon">⚡</span>
+            <h2>Recent Executions</h2>
+          </div>
+          <button class="btn btn-secondary btn-small" id="btnRefreshDashboard">Refresh</button>
+        </div>
+        <div id="recentJobsList" class="jobs-list">
+          <!-- Populated via JS -->
+        </div>
+      </section>
+    </main>
+
+    <!-- TAB 2: JOB HISTORY & 3-LEVEL ANALYSIS -->
+    <main class="tab-content" id="tab-history">
+      <section class="card glass-card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="icon">📜</span>
+            <h2>Execution History Explorer</h2>
+          </div>
+          <div class="filter-group">
+            <button class="filter-btn active" data-filter="ALL">All</button>
+            <button class="filter-btn" data-filter="SUCCESS">✅ Success</button>
+            <button class="filter-btn" data-filter="FAILED">❌ Failed</button>
+            <button class="filter-btn" data-filter="CRASHED">💥 Crashed</button>
+          </div>
+        </div>
+        <div id="historyTableContainer" class="table-container">
+          <table class="jobs-table">
+            <thead>
+              <tr>
+                <th>Status</th>
+                <th>Program / Task</th>
+                <th>Runtime</th>
+                <th>Started</th>
+                <th>Language</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="historyTableBody">
+              <!-- Populated via JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <!-- TAB 3: ALERT CONTROL CENTER -->
+    <main class="tab-content" id="tab-settings">
+      <section class="card glass-card settings-card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="icon">⚙️</span>
+            <h2>Code Alarm Settings</h2>
+          </div>
+          <span class="badge badge-success">Saved Automatically</span>
+        </div>
+        <p class="card-desc">Control your laptop alert behavior across all execution sources (terminal, VS Code, notebooks).</p>
+
+        <div class="settings-list">
+          <!-- Master Alert System -->
+          <div class="setting-item highlight-setting">
+            <div class="setting-info">
+              <h3>Master Alert System</h3>
+              <p>When OFF, all sounds and notifications are muted while background monitoring and job history remain active.</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="set_master_alert_system">
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <!-- Success Sound -->
+          <div class="setting-item" id="item_success_sound">
+            <div class="setting-info">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <h3>Success Sound</h3>
+                <span class="badge badge-muted" id="tag_success_sound" style="display: none;">MUTED (Quiet Mode)</span>
+              </div>
+              <p>Play 3-note harmonic audio chime on laptop speakers when a task finishes successfully.</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="set_success_sound">
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <!-- Failure Sound -->
+          <div class="setting-item" id="item_failure_sound">
+            <div class="setting-info">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <h3>Failure Sound</h3>
+                <span class="badge badge-muted" id="tag_failure_sound" style="display: none;">MUTED (Quiet Mode)</span>
+              </div>
+              <p>Play low descending warning chord on laptop speakers when a task fails or crashes.</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="set_failure_sound">
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <!-- Desktop Notification -->
+          <div class="setting-item" id="item_desktop_notification">
+            <div class="setting-info">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <h3>Desktop Notification</h3>
+                <span class="badge badge-muted" id="tag_desktop_notification" style="display: none;">MUTED (Quiet Mode)</span>
+              </div>
+              <p>Display short Windows Toast Notification in bottom-right corner with execution status and runtime.</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="set_desktop_notification">
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <!-- Failure Intelligence -->
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3>Failure Intelligence</h3>
+              <p>Perform deterministic rule-based error detection to identify likely causes and actionable fix suggestions.</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="set_failure_intelligence">
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <!-- Job Summary -->
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3>Job Summary</h3>
+              <p>Calculate 3-level aggregate statistics and structured execution summaries.</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="set_job_summary">
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <!-- Quiet Mode -->
+          <div class="setting-item highlight-quiet">
+            <div class="setting-info">
+              <h3>Quiet Mode</h3>
+              <p>Temporarily suppress all audio and visual notifications while preserving full background logging.</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="set_quiet_mode">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- TAB 4: SOUND STUDIO & SIMULATOR -->
+    <main class="tab-content" id="tab-studio">
+      <section class="card glass-card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="icon">🎛️</span>
+            <h2>Sound Pattern Triggers</h2>
+          </div>
+          <span class="badge">Hardware + DirectSound</span>
+        </div>
+        <p class="card-desc">Click any pattern to preview the buzzer audio through your laptop speakers or trigger USB serial signal.</p>
+
+        <div class="triggers-grid">
+          <button class="trigger-btn trigger-success" data-signal="SUCCESS" id="btnSignalSuccess">
+            <div class="trigger-top">
+              <span class="trigger-icon">✅</span>
+              <span class="trigger-tag">Exit Code 0</span>
+            </div>
+            <div class="trigger-body">
+              <h3>SUCCESS</h3>
+              <p>3-Note Harmonic Crystal Chime</p>
+            </div>
+          </button>
+
+          <button class="trigger-btn trigger-error" data-signal="ERROR" id="btnSignalError">
+            <div class="trigger-top">
+              <span class="trigger-icon">⚠️</span>
+              <span class="trigger-tag">Exit Code != 0</span>
+            </div>
+            <div class="trigger-body">
+              <h3>ERROR / CRASH</h3>
+              <p>2-Note Descending Warning Chord</p>
+            </div>
+          </button>
+
+          <button class="trigger-btn trigger-train" data-signal="TRAIN_DONE" id="btnSignalTrain">
+            <div class="trigger-top">
+              <span class="trigger-icon">🏆</span>
+              <span class="trigger-tag">Long Runs / ML</span>
+            </div>
+            <div class="trigger-body">
+              <h3>TRAINING COMPLETE</h3>
+              <p>4-Note Victory Fanfare</p>
+            </div>
+          </button>
+
+          <button class="trigger-btn trigger-alert" data-signal="ALERT" id="btnSignalAlert">
+            <div class="trigger-top">
+              <span class="trigger-icon">🚨</span>
+              <span class="trigger-tag">Urgent Attention</span>
+            </div>
+            <div class="trigger-body">
+              <h3>CONTINUOUS ALERT</h3>
+              <p>Rapid Pulse Siren</p>
+            </div>
+          </button>
+        </div>
+
+        <!-- Audio Visualizer Canvas -->
+        <div class="visualizer-box">
+          <div class="visualizer-header">
+            <span>Sound Frequency Visualizer</span>
+            <span id="visFrequencyLabel">Idle</span>
+          </div>
+          <canvas id="visualizerCanvas" width="500" height="70"></canvas>
+        </div>
+      </section>
+    </main>
+
+    <!-- MODAL: LEVEL 2 & LEVEL 3 JOB INSPECTOR -->
+    <div class="modal-overlay" id="jobModalOverlay" style="display: none;">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div class="modal-title-group">
+            <span class="modal-status-icon" id="modalStatusIcon">✅</span>
+            <div>
+              <h2 id="modalJobProgram">Program Name</h2>
+              <span class="modal-job-id" id="modalJobId">job_id</span>
+            </div>
+          </div>
+          <button class="modal-close-btn" id="btnModalClose">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          <!-- Level 2: Job Details Grid -->
+          <div class="details-grid">
+            <div class="detail-item">
+              <span class="detail-label">Status</span>
+              <span class="detail-val" id="modalStatusVal">SUCCESS</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Runtime</span>
+              <span class="detail-val" id="modalRuntimeVal">0.0s</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Exit Code</span>
+              <span class="detail-val" id="modalExitVal">0</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Language</span>
+              <span class="detail-val" id="modalLangVal">Python</span>
+            </div>
+            <div class="detail-item full-width">
+              <span class="detail-label">Command</span>
+              <code class="detail-code" id="modalCommandVal">command</code>
+            </div>
+            <div class="detail-item full-width">
+              <span class="detail-label">Working Directory</span>
+              <span class="detail-val" id="modalCwdVal">cwd</span>
+            </div>
+          </div>
+
+          <!-- Level 3: Failure Intelligence Analysis (If failed/crashed) -->
+          <div class="analysis-section" id="modalAnalysisSection" style="display: none;">
+            <div class="analysis-header">
+              <span class="icon">🔍</span>
+              <h3>Execution Analysis</h3>
+            </div>
+            
+            <div class="analysis-card">
+              <div class="analysis-row">
+                <span class="analysis-tag">Error Type:</span>
+                <span class="analysis-error-badge" id="modalErrorType">Unknown</span>
+              </div>
+              <div class="analysis-row">
+                <span class="analysis-tag">Likely Cause:</span>
+                <p class="analysis-text" id="modalLikelyCause">Cause description</p>
+              </div>
+              <div class="analysis-row">
+                <span class="analysis-tag">Suggested Action:</span>
+                <p class="analysis-text suggestion-text" id="modalSuggestedAction">Suggested fix</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Collapsible Raw Output Section -->
+          <div class="output-collapsible">
+            <button class="btn-toggle-output" id="btnToggleOutput">
+              <span>📋 Captured Output / Traceback</span>
+              <span id="outputToggleArrow">▼</span>
+            </button>
+            <div class="output-box" id="modalOutputBox" style="display: none;">
+              <pre><code id="modalRawOutput">No output captured.</code></pre>
+              <div class="output-actions">
+                <button class="btn btn-secondary btn-small" id="btnCopyError">Copy Error Output</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>💻 Code Alarm V2 • Developer Execution Monitoring & Intelligent Alerts • Zero Cloud Dependencies</p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

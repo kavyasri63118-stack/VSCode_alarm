@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "code-alarm"
+version = "1.0.0"
+description = "Laptop Code-Completion Alarm: Physical USB buzzer notifier for VS Code and Python."
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "pyserial>=3.5",
+]
+
+[project.scripts]
+code-alarm = "code_alarm.cli:main"
