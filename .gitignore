@@ -1,1 +1,42 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
 
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Build outputs
+build/
+dist/
+dist_installer/
+
+# Temporary / development files
+scratch/
+*.tmp
+*.log
+
+# Local Code Alarm data
+*.db
+*.sqlite
+*.sqlite3
+config.json
+history.db
+
+# IDE / editor files
+.vscode/
+.idea/
+
+# Python packaging
+*.egg-info/
+.eggs/
+
+# OS generated files
+Thumbs.db
+.DS_Store
+
+# Installer / executable build artifacts
+*.spec.bak
